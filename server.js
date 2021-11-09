@@ -17,10 +17,27 @@ app.use(cors());
 
 const PORT = process.env.PORT || 3001;
 
-app.get('/books', (request, response) => {
+const handleBookRequest = async (require, response) => {
+  let queryObj = {};
+  if (require.query.title) {
+    queryObj = {title: require.query.title};
+  }
 
-  response.send('test request received')
+  try {
+    const booksFromDB = await Book.find(queryObj);
+    if (booksFromDB.length > 0) {
+      response.status(200).send(booksFromDB);
+    } else {
+      response.status(404).send('no books');
+    }
+  } catch (e) {
+    console.log(e);
+    response.status(500).send('bigger issue');
+  }
 
-})
+};
+
+
+app.get('/books', handleBookRequest);
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
