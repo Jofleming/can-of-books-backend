@@ -14,13 +14,14 @@ db.once('open', () => console.log('Mongoose is connected'));
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 const PORT = process.env.PORT || 3001;
 
-const handleBookRequest = async (require, response) => {
+const handleBookRequest = async (request, response) => {
   let queryObj = {};
-  if (require.query.title) {
-    queryObj = {title: require.query.title};
+  if (request.query.title) {
+    queryObj = {title: request.query.title};
   }
 
   try {
@@ -37,7 +38,17 @@ const handleBookRequest = async (require, response) => {
 
 };
 
+const handleBookPost = async (req, res) => {
+  try {
+    console.log(req.body);
+    let newBook = await Book.create(req.body);
+    res.status(201).send(newBook);
+  } catch (e) {
+    res.status(500).send('Sorry, your book was not added.');
+  }
+};
 
 app.get('/books', handleBookRequest);
+app.post('/books', handleBookPost);
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
