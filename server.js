@@ -40,9 +40,7 @@ const handleBookRequest = async (req, res) => {
 
 const handleBookPost = async (req, res) => {
   try {
-    console.log(req.body);
     let newBook = await Book.create(req.body);
-    console.log(newBook);
     res.status(201).send(newBook);
   } catch (e) {
     res.status(500).send('Sorry, your book was not added.');

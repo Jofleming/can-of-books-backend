@@ -28,6 +28,7 @@ The Can of Books server repo can be used to pull book data from a MongoDB databa
 ## Change Log
 
 11-08-2021 4:59pm - Application now has a fully-functional express server, with a GET route for the books path and can store book models in the database.
+11-09-2021 10:30pm - Application has working delete and post routes for adding and removing books from the database.
 
 ## Estimates
 
@@ -37,8 +38,8 @@ The Can of Books server repo can be used to pull book data from a MongoDB databa
 | 2 | Storage                                 | 01:30          | 03:00PM  | 05:00PM | 02:00  |
 | 3 | Book Component                          | 02:00          | 05:00PM  | 06:00PM | 01:00  |
 | - | Book Component Cont                     | 00:00          | 08:30PM  | 10:30PM | 02:00  |
-| 4 |                                         | 00:00          | 00:00PM  | 00:00PM | 00:00  |
-| 5 |                                         | 00:00          | 00:00PM  | 00:00PM | 00:00  |
+| 4 | Post Route                              | 01:00          | 04:30PM  | 06:30PM | 02:00  |
+| 5 | Delete Route                            | 01:30          | 08:15PM  | 10:15PM | 02:00  |
 | 6 |                                         | 00:00          | 00:00PM  | 00:00PM | 00:00  |
 
 ## Credit and Collaborations
