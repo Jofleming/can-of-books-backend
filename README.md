@@ -1,7 +1,7 @@
 # Can of Books
 
 **Author**: [Ben Mills](https://github.com/akkanben) and [Jordan Fleming](https://github.com/Jofleming)
-**Version**: 1.0.0
+**Version**: 1.0.2
 
 ## Overview
 
