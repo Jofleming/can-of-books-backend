@@ -51,13 +51,16 @@ const handleBookPost = async (req, res) => {
 
 const handleBookDelete = async (req, res) => {
   const id = req.params.id;
-  console.log(id);
+  const email = req.query.email;
   try {
-    const deletedBook = await Book.findByIdAndDelete(id);
-    if (deletedBook) {
-      res.status(204).send('book deleted');
-    } else {
-      res.status(404).send('Can\'t find book to delete');
+    const bookCheck = await Book.findById(id);
+    if (bookCheck.email === email) {
+      const deletedBook = await Book.findByIdAndDelete(id);
+      if (deletedBook) {
+        res.status(204).send('Book successfully deleted.');
+      } else {
+        res.status(404).send('Can\'t find book to delete');
+      }
     }
   } catch (error) {
     res.status(500).send('Server Error');
@@ -66,6 +69,6 @@ const handleBookDelete = async (req, res) => {
 
 app.get('/books', handleBookRequest);
 app.post('/books', handleBookPost);
-app.delete('/books', handleBookDelete);
+app.delete('/books/:id', handleBookDelete);
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
