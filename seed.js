@@ -18,7 +18,7 @@ const seed = async () => {
     } else {
       console.log('saved my book, Dune');
     }
-  })
+  });
 
   const mathBook = new Book({
     title: 'Algebra 2',
@@ -32,7 +32,7 @@ const seed = async () => {
     } else {
       console.log(`saved my book, Algebra 2`);
     }
-  })
+  });
 
   const jsBook = new Book({
     title: 'JavaScript',
@@ -46,7 +46,7 @@ const seed = async () => {
     } else {
       console.log('saved my book, JavaScript');
     }
-  })
-}
+  });
+};
 
 seed();

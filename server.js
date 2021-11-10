@@ -14,30 +14,59 @@ db.once('open', () => console.log('Mongoose is connected'));
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 const PORT = process.env.PORT || 3001;
 
-const handleBookRequest = async (require, response) => {
+const handleBookRequest = async (req, res) => {
   let queryObj = {};
-  if (require.query.title) {
-    queryObj = {title: require.query.title};
+  if (req.query.title) {
+    queryObj = {title: req.query.title};
   }
 
   try {
     const booksFromDB = await Book.find(queryObj);
     if (booksFromDB.length > 0) {
-      response.status(200).send(booksFromDB);
+      res.status(200).send(booksFromDB);
     } else {
-      response.status(404).send('no books');
+      res.status(404).send('no books');
     }
   } catch (e) {
     console.log(e);
-    response.status(500).send('bigger issue');
+    res.status(500).send('bigger issue');
   }
 
 };
 
+const handleBookPost = async (req, res) => {
+  try {
+    let newBook = await Book.create(req.body);
+    res.status(201).send(newBook);
+  } catch (e) {
+    res.status(500).send('Sorry, your book was not added.');
+  }
+};
+
+const handleBookDelete = async (req, res) => {
+  const id = req.params.id;
+  const email = req.query.email;
+  try {
+    const bookCheck = await Book.findById(id);
+    if (bookCheck.email === email) {
+      const deletedBook = await Book.findByIdAndDelete(id);
+      if (deletedBook) {
+        res.status(204).send('Book successfully deleted.');
+      } else {
+        res.status(404).send('Can\'t find book to delete');
+      }
+    }
+  } catch (error) {
+    res.status(500).send('Server Error');
+  }
+};
 
 app.get('/books', handleBookRequest);
+app.post('/books', handleBookPost);
+app.delete('/books/:id', handleBookDelete);
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
