@@ -20,10 +20,9 @@ const PORT = process.env.PORT || 3001;
 
 const handleBookRequest = async (req, res) => {
   let queryObj = {};
-  if (req.query.title) {
-    queryObj = {title: req.query.title};
+  if (req.query.email) {
+    queryObj = {email: req.query.email};
   }
-
   try {
     const booksFromDB = await Book.find(queryObj);
     if (booksFromDB.length > 0) {
@@ -65,8 +64,26 @@ const handleBookDelete = async (req, res) => {
   }
 };
 
+const handleBookPut = async (req, res) => {
+  const id = req.params.id;
+  const requestedUpdate = {...req.body, email: req.query.email};
+  try {
+    const updatedBook = await Book.findByIdAndUpdate(id, requestedUpdate, {new: true, overwrite: true});
+    if (updatedBook) {
+      res.status(202).send(updatedBook);
+    } else {
+      res.status(404);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500);
+
+  }
+}
+
 app.get('/books', handleBookRequest);
 app.post('/books', handleBookPost);
 app.delete('/books/:id', handleBookDelete);
+app.put('/books/:id', handleBookPut);
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
