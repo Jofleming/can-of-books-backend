@@ -22,8 +22,8 @@ const PORT = process.env.PORT || 3001;
 const handleBookRequest = (req, res) => {
   verifyUser(req, async (err, user) => {
     if (err) {
-      res.status(498).send('Token not valid.')
-      console.log('error here')
+      res.status(498).send('Token not valid.');
+      console.log('error here');
     } else {
       try {
         const booksFromDB = await Book.find({email: user.email});
@@ -38,16 +38,12 @@ const handleBookRequest = (req, res) => {
         res.status(500).send('Server error');
       }
     }
-  })
+  });
 };
 
 
 const handleBookPost = (req, res) => {
   verifyUser(req, async (err, user) => {
-    console.log(user);
-    console.log(user.email)
-    console.log(booksFromDB)
-    console.log(req.body);
     if (err) {
       res.status(498).send('Token not valid');
     } else {
@@ -58,7 +54,7 @@ const handleBookPost = (req, res) => {
         res.status(500).send('Sorry, your book was not added.');
       }
     }
-  })
+  });
 };
 
 const handleBookDelete = (req, res) => {
@@ -68,9 +64,7 @@ const handleBookDelete = (req, res) => {
     } else {
       try {
         const id = req.params.id;
-        console.log(id);
         const bookCheck = await Book.findById(id);
-        console.log(bookCheck)
         if (bookCheck.email === user.email) {
           const deletedBook = await Book.findByIdAndDelete(id);
           if (deletedBook) {
@@ -83,18 +77,17 @@ const handleBookDelete = (req, res) => {
         res.status(500).send('Server Error');
       }
     }
-  })
+  });
 };
 
 const handleBookPut = (req, res) => {
-
   verifyUser(req, async (err, user) => {
     if (err) {
       res.status(498).send('Token not valid');
     } else {
       try {
         const id = req.params.id;
-        const requestedUpdate = {...req.body, email: user.email};
+        const requestedUpdate = req.body;
         const updatedBook = await Book.findByIdAndUpdate(id, requestedUpdate, {new: true, overwrite: true});
         if (updatedBook) {
           res.status(202).send(updatedBook);
@@ -106,8 +99,8 @@ const handleBookPut = (req, res) => {
         res.status(500);
       }
     }
-  })
-}
+  });
+};
 
 const getUser = (req, res) => {
   verifyUser(req, (err, user) => {
@@ -116,8 +109,8 @@ const getUser = (req, res) => {
     } else {
       res.status(200).send(user);
     }
-  })
-}
+  });
+};
 
 app.get('/books', handleBookRequest);
 app.post('/books', handleBookPost);
