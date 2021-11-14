@@ -20,13 +20,14 @@ app.use(express.json());
 const PORT = process.env.PORT || 3001;
 
 const handleBookRequest = (req, res) => {
-
   verifyUser(req, async (err, user) => {
     if (err) {
       res.status(498).send('Token not valid.')
+      console.log('error here')
     } else {
       try {
         const booksFromDB = await Book.find({email: user.email});
+
         if (booksFromDB.length > 0) {
           res.status(200).send(booksFromDB);
         } else {
@@ -41,48 +42,71 @@ const handleBookRequest = (req, res) => {
 };
 
 
-const handleBookPost = async (req, res) => {
-  try {
-    let newBook = await Book.create(req.body);
-    res.status(201).send(newBook);
-  } catch (e) {
-    res.status(500).send('Sorry, your book was not added.');
-  }
-};
-
-const handleBookDelete = async (req, res) => {
-  const id = req.params.id;
-  const email = req.query.email;
-  try {
-    const bookCheck = await Book.findById(id);
-    if (bookCheck.email === email) {
-      const deletedBook = await Book.findByIdAndDelete(id);
-      if (deletedBook) {
-        res.status(204).send('Book successfully deleted.');
-      } else {
-        res.status(404).send('Can\'t find book to delete');
+const handleBookPost = (req, res) => {
+  verifyUser(req, async (err, user) => {
+    console.log(user);
+    console.log(user.email)
+    console.log(booksFromDB)
+    console.log(req.body);
+    if (err) {
+      res.status(498).send('Token not valid');
+    } else {
+      try {
+        let newBook = await Book.create(req.body);
+        res.status(201).send(newBook);
+      } catch (e) {
+        res.status(500).send('Sorry, your book was not added.');
       }
     }
-  } catch (error) {
-    res.status(500).send('Server Error');
-  }
+  })
 };
 
-const handleBookPut = async (req, res) => {
-  const id = req.params.id;
-  const requestedUpdate = {...req.body, email: req.query.email};
-  try {
-    const updatedBook = await Book.findByIdAndUpdate(id, requestedUpdate, {new: true, overwrite: true});
-    if (updatedBook) {
-      res.status(202).send(updatedBook);
+const handleBookDelete = (req, res) => {
+  verifyUser(req, async (err, user) => {
+    if (err) {
+      res.status(498).send('Token not valid');
     } else {
-      res.status(404);
+      try {
+        const id = req.params.id;
+        console.log(id);
+        const bookCheck = await Book.findById(id);
+        console.log(bookCheck)
+        if (bookCheck.email === user.email) {
+          const deletedBook = await Book.findByIdAndDelete(id);
+          if (deletedBook) {
+            res.status(204).send('Book successfully deleted.');
+          } else {
+            res.status(404).send('Can\'t find book to delete');
+          }
+        }
+      } catch (error) {
+        res.status(500).send('Server Error');
+      }
     }
-  } catch (error) {
-    console.log(error);
-    res.status(500);
+  })
+};
 
-  }
+const handleBookPut = (req, res) => {
+
+  verifyUser(req, async (err, user) => {
+    if (err) {
+      res.status(498).send('Token not valid');
+    } else {
+      try {
+        const id = req.params.id;
+        const requestedUpdate = {...req.body, email: user.email};
+        const updatedBook = await Book.findByIdAndUpdate(id, requestedUpdate, {new: true, overwrite: true});
+        if (updatedBook) {
+          res.status(202).send(updatedBook);
+        } else {
+          res.status(404);
+        }
+      } catch (error) {
+        console.log(error);
+        res.status(500);
+      }
+    }
+  })
 }
 
 const getUser = (req, res) => {
